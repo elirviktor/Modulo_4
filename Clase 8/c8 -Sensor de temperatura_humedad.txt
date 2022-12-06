@@ -1,0 +1,89 @@
+#include <OneWire.h>
+#include <DallasTemperature.h>
+#include <LiquidCrystal_I2C.h>
+
+#define ONE_WIRE_PIN 
+
+const int ledPin = 15;
+const int ledPin2= 13;
+const int ledPin3= 12;
+const int Shumedad = 16;
+
+
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+OneWire oneWire( ONE_WIRE_PIN 2);
+DallasTemperature sensors (&oneWire);
+int q = 0;
+
+void setup() {
+Serial.begin(115200);
+lcd.init();
+lcd.setBacklight(1);
+
+sensors.begin();
+pinMode(ledPin, OUTPUT);
+pinMode(ledPin2, OUTPUT);
+pinMode(ledPin3, OUTPUT);
+pinMode(Shumedad, INPUT);
+
+lcd.setCursor(0,0);
+lcd.print("Sensores: ");
+
+}
+
+void loop() {
+
+  q = sensors.getDeviceCount();
+  sensors.requestTemperatures();
+  float temp = sensors.getTempCByIndex(0);
+  int humedad = digitalRead(Shumedad);
+
+  lcd.setCursor(0,0);
+  lcd.print("Temp: ");
+  lcd.print(temp);
+  lcd.setCursor(0,1);
+  lcd.print("Humedad: ");
+  lcd.print(humedad);
+  Serial.println(String(temp));
+  Serial.println(String(humedad));
+  delay(1000);
+
+if (temp<20.00)
+{
+  digitalWrite(ledPin, HIGH);
+}
+else 
+{
+   digitalWrite(ledPin, LOW);
+}
+
+if (temp>=20.00 && temp<=30.00)
+{
+  digitalWrite(ledPin, 128);
+}
+else 
+{
+   digitalWrite(ledPin, LOW);
+}
+
+if (temp>30.00)
+{
+  digitalWrite(ledPin2, HIGH);
+  digitalWrite(ledPin3, HIGH);
+  delay(1000);
+  digitalWrite(ledPin3, HIGH);
+  delay(1000);
+  digitalWrite(ledPin3, HIGH);
+  delay(1000);
+  digitalWrite(ledPin3, HIGH);
+  delay(1000);
+  digitalWrite(ledPin3, HIGH);
+
+}
+else 
+{
+   digitalWrite(ledPin2, LOW);
+}
+
+}

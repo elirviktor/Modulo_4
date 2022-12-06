@@ -1,0 +1,94 @@
+#include <Wire.h>
+#include <LiquidCrystal_I2C.h>
+
+const int Sensor = 14;
+const int echo= 16;
+const int ledPin = 15;
+const int ledPin2= 13;
+const int ledPin3= 12;
+LiquidCrystal_I2C lcd(0x27, 16, 2);
+
+void setup() {
+
+
+Serial.begin(9600);
+
+lcd.init();
+lcd.setBacklight(1);
+
+pinMode(Sensor, OUTPUT); //pin como salida
+pinMode(echo, INPUT);  //pin como entrada
+digitalWrite(Sensor, LOW);//Inicializamos el pin con 0
+
+pinMode(ledPin, OUTPUT);
+pinMode(ledPin2, OUTPUT);
+pinMode(ledPin3, OUTPUT);
+
+}
+
+
+void loop() {
+
+long duration, cm;
+
+
+digitalWrite(Sensor, HIGH);
+delayMicroseconds(10);
+digitalWrite(Sensor, LOW);
+
+duration = pulseIn(echo, HIGH);
+
+cm = duration/59;
+
+ Serial.print("Distancia: ");
+ Serial.print(cm);      //Enviamos serialmente el valor de la distancia
+ Serial.print("cm");
+ Serial.println();
+ 
+
+  lcd.setCursor(0,0);
+  lcd.print("Distancia: ");
+  lcd.setCursor(2,1);
+  lcd.print(cm);
+  lcd.print("cm");
+ delay(100);          //Hacemos una pausa de 100ms
+  lcd.clear();
+
+
+if(cm <= 100) {
+    digitalWrite(ledPin, HIGH);
+  }
+  else {
+    digitalWrite(ledPin, LOW);
+  }
+  
+  delay(100);
+  
+  if (cm>100 && cm<200)
+  {
+    
+    digitalWrite(ledPin2, HIGH);
+    
+  }
+  else
+  {
+   
+    digitalWrite(ledPin2, LOW);
+  }
+  delay(100);
+  
+  if (cm>200)
+  {
+    ;
+    digitalWrite(ledPin3,HIGH);    
+  }
+  
+  else
+  {
+    digitalWrite(ledPin3,LOW);
+    
+    
+  }
+
+
+}
